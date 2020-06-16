@@ -90,9 +90,25 @@ class Hero extends BaseCharacter{//繼承
   
   getHurt(damage){
     super.getHurt(damage);
-    this.updateHtml(this.hpElement, this.maxHpElement);
+    this.updateHtml(this.hpElement, this.hurtElement);
   }
+
+
+  heal(){
+    this.hp += 30;
+    if (this.hp >= this.maxHp){
+      this.hp = this.maxHp;
+    }
+
+    this.updateHtml(this.hpElement, this.hurtElement);
+  }
+
 }
+
+
+
+
+
 
 //創建怪物
 class Monster extends BaseCharacter{//繼承
@@ -120,7 +136,7 @@ class Monster extends BaseCharacter{//繼承
    
   getHurt(damage){
     super.getHurt(damage);
-    this.updateHtml(this.hpElement, this.maxHpElement);
+    this.updateHtml(this.hpElement, this.hurtElement);
   }
 }
 
@@ -135,6 +151,19 @@ function addSkillEvent (){
 }
 
 addSkillEvent(); //執行上方程式
+
+
+
+// 設計英雄使用治癒流程(圖片畫面動作)
+function addHealEvent (){
+  var heal = document.getElementById("heal");
+  heal.onclick = function(){ //當攻擊圖片被點即時執行下方
+    heroHeal();
+  }
+}
+
+addHealEvent(); //執行上方程式
+
 
 
 //撰寫回合結束的機制
@@ -195,6 +224,54 @@ function heroAttack(){
 
 }
 
+// 定義何謂heroheal整個流程（圖片動畫時間）
+function heroHeal(){
+  document.getElementsByClassName("skill-block")[0].style.display ="none"; //為什麼不是[1]??? 不懂
+
+  hero.heal();
+  // //設定hero攻擊動畫時間
+  // setTimeout(function(){
+  //   //0.1秒後圖片開始移動
+  //   hero.element.classList.add("attacking");
+
+  //   //圖片開始移動後0.5秒，去呼叫攻擊指令，並將圖片的attacking屬性刪除，(特別的點在於再刪除後由於transition的關係，他會以0.5秒動畫移動回原點)
+  //   setTimeout(function(){
+  //     hero.attack(monster);
+  //     hero.element.classList.remove("attacking");
+  //   }, 500);
+  // }
+  //   , 100);
+
+
+  //設定monster攻擊動畫時間
+  setTimeout(function(){
+    if (monster.alive){
+      monster.element.classList.add("attacking");
+
+      setTimeout(function(){
+        monster.attack(hero);
+        monster.element.classList.remove("attacking");
+
+        if (hero.alive == false){ //判斷英雄若死亡
+          finish();//遊戲結束
+        }
+        else {
+          document.getElementsByClassName("skill-block")[0].style.display ="block" //攻擊按鈕重新顯示（“注意是用block”）
+        }
+
+          endTurn(); //遊戲回合減1
+      }, 500);
+  
+    }
+
+    else {
+      finish();  //遊戲結束
+    }
+  },1100);
+
+}
+
+
 
 
 //設計遊戲結束
@@ -203,7 +280,7 @@ function finish(){
   dialog.style.display = "block";
 
   if (monster.alive == false){
-    dialog.classList.add("win");
+    dialog.classList.add("win"); //沒想過的方法，透過css選擇器賦予一個屬性給dialog，再往下去連結win，使其變成display=block
   }
   else {dialog.classList.add("lose");
   }
@@ -211,7 +288,7 @@ function finish(){
 
 
 //生成兩個角色
-var hero = new Hero("Light", 100, 30);
+var hero = new Hero("Light", 30, 30);
 var monster = new Monster("Dark", 100, 10);
 
 
