@@ -144,7 +144,7 @@ function endTurn(){
   rounds--;
   document.getElementById("round-num").textContent =rounds; //改變回合制上方的文字顯示
   if (rounds < 1){
-    //遊戲結束
+    finish();//遊戲結束
   }
 }
 
@@ -177,7 +177,7 @@ function heroAttack(){
         monster.element.classList.remove("attacking");
 
         if (hero.alive == false){ //判斷英雄若死亡
-          //遊戲結束
+          finish();//遊戲結束
         }
         else {
           document.getElementsByClassName("skill-block")[0].style.display ="block" //攻擊按鈕重新顯示（“注意是用block”）
@@ -189,16 +189,31 @@ function heroAttack(){
     }
 
     else {
-        //遊戲結束
+      finish();  //遊戲結束
     }
   },1100);
 
 }
 
 
+
+//設計遊戲結束
+function finish(){
+  var dialog = document.getElementById("dialog");
+  dialog.style.display = "block";
+
+  if (monster.alive == false){
+    dialog.classList.add("win");
+  }
+  else {dialog.classList.add("lose");
+  }
+}
+
+
 //生成兩個角色
 var hero = new Hero("Light", 100, 30);
 var monster = new Monster("Dark", 100, 10);
+
 
 
 
