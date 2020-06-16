@@ -96,6 +96,78 @@ class Monster extends BaseCharacter{//繼承
   }
 }
 
+
+
+//設計遊戲戰鬥流程(圖片畫面動作)
+function addSkillEvent (){
+  var skill = document.getElementById("skill");
+  skill.onclick = function(){ //當攻擊圖片被點即時執行下方
+    heroAttack();
+  }
+}
+
+addSkillEvent(); //執行上方程式
+
+
+//撰寫回合結束的機制
+var rounds = 10;
+
+function endTurn(){
+  rounds--;
+  document.getElementById("round-num").textContent =rounds; //改變回合制上方的文字顯示
+  if (rounds < 1){
+    //遊戲結束
+  }
+}
+
+
+//定義何謂heroattack整個流程（圖片動畫時間）
+function heroAttack(){
+  document.getElementsByClassName("skill-block")[0].style.display ="none"; //按完攻擊按鈕後，在攻擊過程中攻擊按鈕消失(注意1.class會選到array所以要指定項目 2.＝後要用引號)
+
+  //設定hero攻擊動畫時間
+  setTimeout(function(){
+    //0.1秒後圖片開始移動
+    hero.element.classList.add("attacking");
+
+    //圖片開始移動後0.5秒，去呼叫攻擊指令，並將圖片的attacking屬性刪除，(特別的點在於再刪除後由於transition的關係，他會以0.5秒動畫移動回原點)
+    setTimeout(function(){
+      hero.attack(monster);
+      hero.element.classList.remove("attacking");
+    }, 500);
+  }
+    , 100);
+
+
+  //設定monster攻擊動畫時間
+  setTimeout(function(){
+    if (monster.alive){
+      monster.element.classList.add("attacking");
+
+      setTimeout(function(){
+        monster.attack(hero);
+        monster.element.classList.remove("attacking");
+
+        if (hero.alive == false){ //判斷英雄若死亡
+          //遊戲結束
+        }
+        else {
+          document.getElementsByClassName("skill-block")[0].style.display ="block" //攻擊按鈕重新顯示（“注意是用block”）
+        }
+
+          endTurn(); //遊戲回合減1
+      }, 500);
+  
+    }
+
+    else {
+        //遊戲結束
+    }
+  },1100);
+
+}
+
+
 //生成兩個角色
 var hero = new Hero("Light", 100, 30);
 var monster = new Monster("Dark", 100, 10);
