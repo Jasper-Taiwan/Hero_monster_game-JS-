@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <title>hero_monster_game_JS</title>
+  <!-- 讀取外部ＣＳＳ和google提供的字型</!-->
   <link rel="stylesheet" href="css/index.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Contrail One">
 
 </head>
 <body>
-  <script src="js/index.js">
-    
-  </script>
+  <!--撰寫ＪＳ</!-->
+
+
   <div id="screen">
     <div id="header">
 
@@ -20,7 +21,7 @@
         </div>  
         <div class="hp-text">
           <span id="hero-hp"></span>
-          <span id="hero-max-hp">130</span>
+          <span id="hero-max-hp"></span>
         </div>
       </div>
 
@@ -33,7 +34,7 @@
         </div>  
         <div class="hp-text">
           <span id="monster-hp"></span>
-          <span id="monster-max-hp">130</span>
+          <span id="monster-max-hp"></span>
         </div>
       </div>
     </div>
@@ -72,18 +73,12 @@
       
     </div>
   </div>
+
+  <!--如果把script放在body一開始的地方 則會出現錯誤 因為執行ＤＯＭ時仍未載入上方的物件</!-->
+  <script src="js/index.js"></script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
 
 
 
