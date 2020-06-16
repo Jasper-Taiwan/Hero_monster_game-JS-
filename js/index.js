@@ -23,6 +23,34 @@ class BaseCharacter {
     if (this.hp <= 0) {
       this.die();
     }
+
+    //加入特效
+    //因為要利用到的setInterval是window的方法，因此如果直接寫this會對應到window，於是我們將指向hero或monster的this存到_this!!!
+    var _this = this;
+    var i = 1; //用來跑8張動畫
+
+    _this.id =setInterval(function(){ //將setInterval指定到一個id下，這樣才能讓clearInterval要執行時可以呼叫
+      //讓傷害的數字可以呈現往上的動畫
+      if (i == 1) { //用_this.element去抓到hero-image-block或monster-image-block  下面所有的classname(這個我覺得很特別！！！)
+        _this.element.getElementsByClassName("hurt-text")[0].classList.add("attacked"); //傷害文字顯示
+        _this.element.getElementsByClassName("hurt-text")[0].textContent =damage;
+
+        _this.element.getElementsByClassName("effect-image")[0].style.display ="block"; //準備讓攻擊特效開始顯示
+      }
+      
+      _this.element.getElementsByClassName("effect-image")[0].src="image/effect/blade/"+i+".png";
+      i++;
+      
+      if (i > 8){
+        _this.element.getElementsByClassName("hurt-text")[0].classList.remove("attacked");
+        _this.element.getElementsByClassName("hurt-text")[0].textContent ="";//讓數字往下跑的時候，沒有數字呈現（因為有transtion所以回到原位也有動畫）
+
+        _this.element.getElementsByClassName("effect-image")[0].style.display ="none";
+        clearInterval(_this.id); //讓setInterval停止的選項(裡面要放他的id),我自己測試是如果放一個變數去存放也行
+      }
+
+
+    }, 50);
   }
 
   die() {
@@ -171,6 +199,22 @@ function heroAttack(){
 //生成兩個角色
 var hero = new Hero("Light", 100, 30);
 var monster = new Monster("Dark", 100, 10);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
