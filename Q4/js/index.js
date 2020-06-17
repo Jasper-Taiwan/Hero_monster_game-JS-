@@ -1,3 +1,5 @@
+alert("開始遊戲!\n按下Ａ鍵，英雄開始攻擊!!\n按下Ｄ鍵，英雄使用補血技能!!!");
+
 //創建初始角色模板
 class BaseCharacter {
 
@@ -101,6 +103,34 @@ class Hero extends BaseCharacter{//繼承
     }
 
     this.updateHtml(this.hpElement, this.hurtElement);
+
+    //加入血量恢復特效
+    //因為要利用到的setInterval是window的方法，因此如果直接寫this會對應到window，於是我們將指向hero或monster的this存到_this!!!
+    var _this = this;
+    var i = 1; //用來跑8張動畫
+
+    _this.id =setInterval(function(){ //將setInterval指定到一個id下，這樣才能讓clearInterval要執行時可以呼叫
+      //讓傷害的數字可以呈現往上的動畫
+      if (i == 1) { //用_this.element去抓到hero-image-block或monster-image-block  下面所有的classname(這個我覺得很特別！！！)
+        _this.element.getElementsByClassName("heal-text")[0].classList.add("healed"); //傷害文字顯示
+        _this.element.getElementsByClassName("heal-text")[0].textContent =30;
+
+        _this.element.getElementsByClassName("effect-image")[0].style.display ="block"; //準備讓攻擊特效開始顯示
+      }
+      
+      _this.element.getElementsByClassName("effect-image")[0].src="image/effect/heal/"+i+".png";
+      i++;
+      
+      if (i > 8){
+        _this.element.getElementsByClassName("heal-text")[0].classList.remove("healed");
+        _this.element.getElementsByClassName("heal-text")[0].textContent ="";//讓數字往下跑的時候，沒有數字呈現（因為有transtion所以回到原位也有動畫）
+
+        _this.element.getElementsByClassName("effect-image")[0].style.display ="none";
+        clearInterval(_this.id); //讓setInterval停止的選項(裡面要放他的id),我自己測試是如果放一個變數去存放也行
+      }
+
+
+    }, 50);
   }
 
 }
@@ -142,27 +172,23 @@ class Monster extends BaseCharacter{//繼承
 
 
 
-//設計遊戲戰鬥流程(圖片畫面動作)
+//設計遊戲戰鬥流程(圖片畫面動作) 改成按下按鍵Ａ啟動
+//設計英雄使用治癒流程(圖片畫面動作) 改成按下按鍵D啟動
 function addSkillEvent (){
-  var skill = document.getElementById("skill");
-  skill.onclick = function(){ //當攻擊圖片被點即時執行下方
-    heroAttack();
+  document.onkeydown = function(event){
+    if (event.keyCode == 65){
+      heroAttack();
+    }
+
+    else if (event.keyCode == 68){
+      heroHeal();
+    }
   }
 }
 
 addSkillEvent(); //執行上方程式
 
 
-
-// 設計英雄使用治癒流程(圖片畫面動作)
-function addHealEvent (){
-  var heal = document.getElementById("heal");
-  heal.onclick = function(){ //當攻擊圖片被點即時執行下方
-    heroHeal();
-  }
-}
-
-addHealEvent(); //執行上方程式
 
 
 
